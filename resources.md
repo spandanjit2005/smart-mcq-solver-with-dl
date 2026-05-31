@@ -1,0 +1,1 @@
+1. Transformer Learning Rate Sheduling: https://apxml.com/courses/foundations-transformers-architecture/chapter-7-implementation-details-optimization/learning-rate-scheduling
