@@ -1,7 +1,7 @@
 [project]
 name = "smart-mcq-colver-with-dl"
 version = "0.1.0"
-description = "Add your description here"
+description = "Code for 26T2 Introduction to Deep Learning and Generative AI Project of the IITM BS in Data Science Program."
 readme = "README.md"
 requires-python = "==3.14"
 dependencies = []
