@@ -3,5 +3,13 @@ name = "smart-mcq-colver-with-dl"
 version = "0.1.0"
 description = "Code for 26T2 Introduction to Deep Learning and Generative AI Project of the IITM BS in Data Science Program."
 readme = "README.md"
-requires-python = "==3.14"
-dependencies = []
+requires-python = "==3.14.5"
+dependencies = [
+    "ipywidgets==8.1.8",
+    "kagglehub==1.0.1",
+    "polars==1.41.2",
+    "python-dotenv==1.2.2",
+    "torch==2.12.0",
+    "transformers==5.9.0",
+    "wandb==0.27.0",
+]
