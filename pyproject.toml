@@ -7,6 +7,7 @@ requires-python = "==3.14.5"
 dependencies = [
     "ipywidgets==8.1.8",
     "kagglehub==1.0.1",
+    "numpy==2.4.6",
     "polars==1.41.2",
     "python-dotenv==1.2.2",
     "torch==2.12.0",
