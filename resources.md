@@ -2,4 +2,4 @@
 2. Adversarial Validation: https://ilias-ant.github.io/blog/adversarial-validation/
 3. A Comparison of LSTM and BERT for Small Corpus: https://arxiv.org/pdf/2009.05451
 4. Engineering the RAG Stack: https://arxiv.org/html/2601.05264
-5. GLiNER2: An Efficient Multi-Task Information Extraction System with Schema-Driven Interface: https://arxiv.org/pdf/2507.18546
+5. Advanced RAG on Hugging Face documentation: https://huggingface.co/learn/cookbook/en/advanced_rag

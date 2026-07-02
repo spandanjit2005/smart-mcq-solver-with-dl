@@ -12,6 +12,5 @@ wheels/
 # Environment files
 .env
 
-# Prototyping & large files
+# Prototyping files
 /prototype
-/rag_data
