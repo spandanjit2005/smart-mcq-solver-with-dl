@@ -81,7 +81,6 @@ def select_diverse_keywords(keywords: list[str], k: int = 5) -> list[str]:
 
         selected.append(best_keyword) # type: ignore 
         remaining.remove(best_keyword) # type: ignore
-    # print(selected)
 
     return selected
 
