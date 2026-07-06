@@ -12,5 +12,6 @@ wheels/
 # Environment files
 .env
 
-# Prototyping files
+# Prototyping and large data files
 /prototype
+/rag_pipeline/data/data_chunks
