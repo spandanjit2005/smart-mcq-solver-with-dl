@@ -16,3 +16,6 @@ wheels/
 /prototype/
 /rag_pipeline/data/data_chunks/
 /rag_pipeline/data/vectorstores/
+
+# Temporarily stop tracking rag_pipeline
+/rag_pipeline/
