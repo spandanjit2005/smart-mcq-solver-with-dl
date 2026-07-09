@@ -6,7 +6,9 @@ readme = "README.md"
 requires-python = "==3.14.5"
 dependencies = [
     "arxiv==4.0.0",
+    "beautifulsoup4==4.15.0",
     "biopython==1.87",
+    "bitsandbytes==0.49.2",
     "chonkie[semantic,st]==1.6.8",
     "chromadb==1.5.9",
     "datasets==5.0.0",

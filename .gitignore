@@ -12,10 +12,12 @@ wheels/
 # Environment files
 .env
 
-# Prototyping and large data directories
-/prototype/
-/rag_pipeline/data/data_chunks/
-/rag_pipeline/data/vectorstores/
+# Prototyping, large data directories, and logs
+prototype/
+dataset/
+data_corpus/
+vectorstores/
+logs/
 
 # Temporarily stop tracking rag_pipeline
 /rag_pipeline/
