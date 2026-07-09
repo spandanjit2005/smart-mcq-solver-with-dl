@@ -16,8 +16,8 @@ wheels/
 prototype/
 dataset/
 data_corpus/
-vectorstores/
+vector_store/
 logs/
 
 # Temporarily stop tracking rag_pipeline
-/rag_pipeline/
+# rag_pipeline/
