@@ -10,7 +10,8 @@ from collections import defaultdict
 
 from bs4 import BeautifulSoup
 
-from utils.core_utils import IST, get_logger, save_scraped_data
+from rag_pipeline.utils.config import IST, get_logger
+from utils.core_utils import save_scraped_data
 
 from utils.arxiv_utils import ARXIV_CLIENT
 from utils.wiki_utils import DELAY_SECONDS, USER_AGENT, WIKI_CLIENT

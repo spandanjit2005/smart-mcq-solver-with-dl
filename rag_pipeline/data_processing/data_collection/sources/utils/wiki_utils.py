@@ -6,12 +6,10 @@ from pathlib import Path
 from datetime import datetime
 from dotenv import load_dotenv
 
-from utils.core_utils import (
-    IST, get_logger,
-    parse_nested_keywords, select_diverse_keywords_clustered, save_scraped_data
-)
+from rag_pipeline.utils.config import IST, get_logger, data_ingestion_config
+from utils.core_utils import parse_nested_keywords, select_diverse_keywords_clustered, save_scraped_data
 
-DELAY_SECONDS = 1.0
+DELAY_SECONDS = data_ingestion_config["wiki_delay_seconds"].item()
 
 load_dotenv()
 USER_AGENT = f"RAGCorpusHarvester/1.0 ({os.getenv("API_CONTACT_EMAIL")})"

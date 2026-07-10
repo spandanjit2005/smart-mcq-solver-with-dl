@@ -1,9 +1,16 @@
-import re, logging
+import os, re, sys, logging
 
 import polars as pl
 
 from pathlib import Path
-from datetime import datetime, timezone, timedelta
+
+project_root = str(Path(__file__).resolve().parents[3])
+
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+from rag_pipeline.utils.config import get_logger, data_vectorization_config
+from dotenv import load_dotenv
 
 from transformers import AutoTokenizer
 
@@ -12,60 +19,41 @@ from chonkie import SentenceChunker, SemanticChunker
 from transformers import logging as hf_logging
 from transformers.utils.logging import disable_progress_bar
 
-# Configure models and data paths
-CHUNK_MODEL = "Qwen/Qwen3-Embedding-0.6B"
-VECTOR_MODEL = "Qwen/Qwen3-Embedding-4B"
+# Configure data paths
+DATASET_PATH = data_vectorization_config["dataset_path"].item()
+CORPUS_PATH = data_vectorization_config["corpus_path"].item()
 
-DATASET_PATH = Path("rag_pipeline/data/dataset")
-CORPUS_PATH = Path("rag_pipeline/data/data_corpus")
+logger = get_logger("corpus_chunker")
 
-# ARXIV_DATASET = DATASET_PATH / "arxiv_records.parquet"
-# PUBMED_DATASET = DATASET_PATH / "pubmed_records.parquet"
-# WIKIPEDIA_DATASET = DATASET_PATH / "wiki_records.parquet"
-# CURATED_DATASET = DATASET_PATH / "curated_records.parquet"
+# Configure HuggingFace API Key
+load_dotenv()
 
-# CHUNKED_DATA_JSONL = CORPUS_PATH / "knowledge_chunks.jsonl"
-# CHUNKED_DATA_PARQUET = CORPUS_PATH / "knowledge_chunks.parquet"
-
-# Configure logger
-IST = timezone(timedelta(hours=5, minutes=30))
-
-logging.Formatter.converter = staticmethod(
-    lambda ts: datetime.fromtimestamp(ts, tz=IST).timetuple()
-)
-
-logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
-logger = logging.getLogger("corpus_chunker")
+os.environ["HF_TOKEN"] = os.getenv("HF_READ_TOKEN") if os.getenv("HF_READ_TOKEN") else "" # type: ignore
 
 # Configure logging levels to hide model-loading report
 hf_logging.set_verbosity_error()
 
-logging.getLogger("httpx").setLevel(logging.ERROR)
-logging.getLogger("transformers").setLevel(logging.ERROR)
-logging.getLogger("huggingface_hub").setLevel(logging.ERROR)
-logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
-
 disable_progress_bar()
 
-tokenizer = AutoTokenizer.from_pretrained(VECTOR_MODEL)
+tokenizer = AutoTokenizer.from_pretrained(data_vectorization_config["embedder_model"].item())
 
 logger.info(f"Loading chunkers from chonkie.")
 
 # Initialize SentenceChunker for arXiv/PubMed (Academic abstracts)
 sentence_chunker = SentenceChunker(
     tokenizer=tokenizer,
-    chunk_size=512,
-    chunk_overlap=128
+    chunk_size=data_vectorization_config["sentence_chunk_size"].item(),
+    chunk_overlap=data_vectorization_config["sentence_chunk_overlap"].item()
 )
 
 # Initialize SemanticChunker for Wikipedia (Long-form articles)
 semantic_chunker = SemanticChunker(
-    embedding_model=CHUNK_MODEL,
-    chunk_size=768,
-    threshold=0.7,
-    skip_window=0, 
-    filter_window=7,
-    similarity_window=2
+    embedding_model=data_vectorization_config["chunker_model"].item(),
+    chunk_size=data_vectorization_config["semantic_chunk_size"].item(),
+    threshold=data_vectorization_config["threshold"].item(),
+    skip_window=data_vectorization_config["skip_window"].item(), 
+    filter_window=data_vectorization_config["filter_window"].item(),
+    similarity_window=data_vectorization_config["similarity_window"].item()
 )
 
 # Define function to clean Wikipedia sections and delete math markers

@@ -8,10 +8,8 @@ from dotenv import load_dotenv
 
 from Bio import Entrez, Medline
 
-from utils.core_utils import (
-    IST, get_logger,
-    parse_nested_keywords, compute_query_plan, save_scraped_data
-)
+from rag_pipeline.utils.config import IST, get_logger
+from utils.core_utils import parse_nested_keywords, compute_query_plan, save_scraped_data
 
 load_dotenv()
 Entrez.email = os.getenv("API_CONTACT_EMAIL")

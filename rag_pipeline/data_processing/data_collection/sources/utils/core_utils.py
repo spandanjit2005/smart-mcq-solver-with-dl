@@ -1,29 +1,7 @@
 import re, logging
 
 import polars as pl
-
 from pathlib import Path
-from datetime import datetime, timezone, timedelta
-
-# Define Logger config
-IST = timezone(timedelta(hours=5, minutes=30))
-
-logging.getLogger("httpx").setLevel(logging.WARNING)
-logging.getLogger("httpcore").setLevel(logging.WARNING)
-
-logging.getLogger("arxiv").setLevel(logging.WARNING)
-logging.getLogger("urllib3").setLevel(logging.WARNING)
-logging.getLogger("requests").setLevel(logging.WARNING)
-logging.getLogger("wikipediaapi").setLevel(logging.WARNING)
-
-logging.Formatter.converter = staticmethod(
-    lambda ts: datetime.fromtimestamp(ts, tz=IST).timetuple()
-)
-
-logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
-
-def get_logger(name: str) -> logging.Logger:
-    return logging.getLogger(f"{name}")
 
 # Define function to parse nested keywords into a simple pl.DataFrame object
 def parse_nested_keywords(csv_path: Path, KEYWORDS_COL: str) -> pl.DataFrame:

@@ -1,42 +1,40 @@
-import torch, joblib, logging
+import os, sys, torch, joblib, logging
 
 import polars as pl
 
 from pathlib import Path
-from datetime import datetime, timezone, timedelta
+
+project_root = str(Path(__file__).resolve().parents[3])
+
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+from rag_pipeline.utils.config import get_logger, data_vectorization_config
+from dotenv import load_dotenv
 
 from sentence_transformers import SentenceTransformer
 
 from transformers import logging as hf_logging
 from transformers.utils.logging import disable_progress_bar
 
-CHUNKED_DATA_PARQUET = Path("rag_pipeline/data/data_corpus/knowledge_chunks.parquet")
-EMBEDDED_DATA_JOBLIB = Path("rag_pipeline/data/vector_store/knowledge_embeddings.joblib")
+CHUNKED_DATA_PARQUET = data_vectorization_config["dataset_path"].item() / "knowledge_chunks.parquet"
+EMBEDDED_DATA_JOBLIB = data_vectorization_config["vector_store_path"].item() / "knowledge_embeddings.joblib"
 
-EMBEDDING_MODEL = "Qwen/Qwen3-Embedding-4B"
+EMBEDDING_MODEL = data_vectorization_config["embedder_model"].item()
 
-EMBED_DIM = 2560
-BATCH_SIZE = 16
+EMBED_DIM = data_vectorization_config["embed_dim"].item()
+BATCH_SIZE = data_vectorization_config["embed_batch_size"].item()
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-# Configure custom logger
-IST = timezone(timedelta(hours=5, minutes=30))
+logger = get_logger("corpus_embedder")
 
-logging.Formatter.converter = staticmethod(
-    lambda ts: datetime.fromtimestamp(ts, tz=IST).timetuple()
-)
+# Configure HuggingFace API Key
+load_dotenv()
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
-
-logger = logging.getLogger("corpus_embedder")
+os.environ["HF_TOKEN"] = os.getenv("HF_READ_TOKEN") if os.getenv("HF_READ_TOKEN") else "" # type: ignore
 
 # Configure logging levels to hide model-loading report
 hf_logging.set_verbosity_error()
-
-logging.getLogger("httpx").setLevel(logging.ERROR)
-logging.getLogger("transformers").setLevel(logging.ERROR)
-logging.getLogger("huggingface_hub").setLevel(logging.ERROR)
-logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
 
 disable_progress_bar()
 
