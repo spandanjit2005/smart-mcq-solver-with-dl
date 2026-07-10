@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 
 import torch
 
-from datasets import Dataset
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 from transformers import logging as hf_logging

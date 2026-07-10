@@ -69,75 +69,92 @@ semantic_chunker = SemanticChunker(
 )
 
 # Define function to clean Wikipedia sections and delete math markers
-def clean_wikipedia_text(
-    text: str,
-    section_headers=("References", "Further reading", "External links", "See also"),
-    math_markers=(r'{\displaystyle', r'{\textstyle')
-) -> str:
+SECTION_STOPWORDS = {
+    "references", "further reading", "external links", "see also",
+    "notes", "bibliography", "citations", "sources", "footnotes",
+    "gallery", "in popular culture",
+}
+
+TEX_START = re.compile(r"\{\\(displaystyle|textstyle|scriptstyle|scriptscriptstyle)\b")
+GARBLED_PREFIX = re.compile(r"(?:\S+\s{2,}){2,}\S*\s*$")
+
+def _find_balanced_end(text: str, start: int):
+    """text[start] == '{'; returns index just past the matching '}'."""
+    depth = 0
+
+    for i in range(start, len(text)):
+
+        if text[i] == "{":
+            depth += 1
+        elif text[i] == "}":
+            depth -= 1
+
+            if depth == 0:
+                return i + 1
+            
+    return len(text)
+
+def _strip_math(text: str) -> str:
+    """Removes {\\displaystyle ...} TeX blocks and garbled
+    Unicode-spaced rendering that precedes them."""
+    out = []
+    i = 0
+
+    while i < len(text):
+        m = TEX_START.match(text, i)
+
+        if m:
+            if out:
+                prefix = "".join(out)
+                gm = GARBLED_PREFIX.search(prefix)
+
+                if gm:
+                    out = [prefix[:gm.start()]]
+
+            i = _find_balanced_end(text, m.start())
+
+        else:
+            out.append(text[i])
+            i += 1
+
+    return "".join(out)
+
+def _truncate_at_boilerplate(text: str) -> str:
+    """Cuts everything from the first boilerplate section title onward."""
+    lines = text.split("\n")\
     
+    for i, line in enumerate(lines):
+        if line.strip().lower() in SECTION_STOPWORDS:
+            return "\n".join(lines[:i])
+        
+    return text
+
+def clean_wikipedia_text(text: str) -> str:
     if not text:
         return ""
     
-    pattern = r'\n(' + '|'.join(re.escape(h) for h in section_headers) + r')\n'
-    match = re.search(pattern, text)
-    
-    if match:
-        text = text[:match.start()]
+    text = _truncate_at_boilerplate(text)
 
-    out = []
-    i = 0
-    while i < len(text):
-        candidates = [(text.find(m, i), m) for m in math_markers]
-        candidates = [(idx, m) for idx, m in candidates if idx != -1]
-        
-        if not candidates:
-            out.append(text[i:])
-            break
-            
-        idx, marker = min(candidates, key=lambda c: c[0])
+    text = _strip_math(text)
 
-        depth = 0
-        j = idx
-        while j < len(text):
-            if text[j] == '{':
-                depth += 1
-                
-            elif text[j] == '}':
-                depth -= 1
-                
-                if depth == 0:
-                    j += 1
-                    break
-            j += 1
-        block_end = j
+    # Citation markers: [1], [23], [citation needed]
+    text = re.sub(r"\[\d+\]", "", text)
+    text = re.sub(
+        r"\[(citation needed|clarification needed|when\?|who\?)\]",
+        "", text, flags=re.IGNORECASE,
+    )
 
-        k = idx
-        last_break = None
-        
-        while k > 0:
-            line_start = text.rfind('\n', 0, k)
-            line = text[line_start + 1:k]
-            stripped = line.strip()
-            
-            if stripped == '':
-                last_break = line_start + 1
-                k = line_start
-                continue
-                
-            if re.search(r'[A-Za-z]{4,}', stripped):
-                break
-                
-            last_break = line_start
-            k = line_start
-            
-        linearized_start = last_break if last_break is not None else idx
+    # Leftover table/image/link artifacts
+    text = re.sub(r"\{\|.*?\|\}", "", text, flags=re.DOTALL)           # wiki tables
+    text = re.sub(r"\[\[(File|Image):.*?\]\]", "", text,
+                   flags=re.IGNORECASE | re.DOTALL)                    # image embeds
+    text = re.sub(r"\[\[[^\]|]*\|([^\]]+)\]\]", r"\1", text)           # [[target|display]]
+    text = re.sub(r"\[\[([^\]]+)\]\]", r"\1", text)                    # [[target]]
+    text = re.sub(r"https?://\S+", "", text)                           # bare URLs
 
-        out.append(text[i:linearized_start])
-        i = block_end
-
-    text = ''.join(out)
-    text = re.sub(r'\n{3,}', '\n\n', text)
-    text = re.sub(r'[ \t]{2,}', ' ', text)
+    # Whitespace cleanup
+    text = re.sub(r"[ \t]+", " ", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
     return text.strip()
 
 # Start chunking data
