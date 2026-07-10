@@ -10,7 +10,7 @@ from sentence_transformers import SentenceTransformer
 from transformers import logging as hf_logging
 from transformers.utils.logging import disable_progress_bar
 
-CHUNKED_DATA_PARQUET = Path("rag_pipeline/data/vector_store/knowledge_chunks.parquet")
+CHUNKED_DATA_PARQUET = Path("rag_pipeline/data/data_corpus/knowledge_chunks.parquet")
 EMBEDDED_DATA_JOBLIB = Path("rag_pipeline/data/vector_store/knowledge_embeddings.joblib")
 
 EMBEDDING_MODEL = "Qwen/Qwen3-Embedding-4B"
