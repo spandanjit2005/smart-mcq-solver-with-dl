@@ -231,6 +231,6 @@ logger.info(f"Total chunks created: {len(data_chunks)}")
 # Save chunked data as both jsonl and parquet
 data_chunks_df = pl.DataFrame(data_chunks)
 data_chunks_df.write_ndjson(data_paths["jsonl_chunk_path"].item())
-data_chunks_df.write_parquet(data_paths["jsonl_chunk_path"].item(), compression="zstd")
+data_chunks_df.write_parquet(data_paths["parquet_chunk_path"].item(), compression="zstd")
 
 logger.info(f"Saved {len(data_chunks)} chunks to disk at {CORPUS_PATH}.")

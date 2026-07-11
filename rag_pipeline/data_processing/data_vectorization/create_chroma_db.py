@@ -1,4 +1,4 @@
-import os, sys, joblib, chromadb, logging
+import sys, joblib, chromadb
 
 import numpy as np
 
@@ -10,7 +10,7 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from rag_pipeline.utils.config import get_logger, data_paths, chroma_db_config
-from dotenv import load_dotenv
+
 
 VECTOR_STORE_PATH = data_paths["vector_store_path"].item()
 
