@@ -10,16 +10,16 @@ project_root = str(Path(__file__).resolve().parents[4])
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from rag_pipeline.utils.config import get_logger, data_ingestion_config
+from rag_pipeline.utils.config import get_logger, data_paths, data_ingestion_config
 
 from utils.arxiv_utils import fetch_arxiv_data
 from utils.pubmed_utils import fetch_pubmed_data
 from utils.wiki_utils import fetch_wiki_data
 from utils.curated_utils import fetch_curated_data
 
-SEARCH_SCHEDULE_DIR = Path("rag_pipeline/data/search_schedules")
-OUTPUT_DATASET_DIR = Path("rag_pipeline/data/dataset")
-OUTPUT_LOG_DIR = Path("rag_pipeline/logs/data_collection")
+SEARCH_SCHEDULE_DIR = data_paths["search_schedule_path"].item()
+OUTPUT_DATASET_DIR = data_paths["dataset_path"].item()
+OUTPUT_LOG_DIR = data_paths["dataset_path"].item()
 
 data_logger = get_logger("all_data")
 

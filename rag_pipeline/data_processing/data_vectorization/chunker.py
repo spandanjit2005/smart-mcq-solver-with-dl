@@ -9,7 +9,7 @@ project_root = str(Path(__file__).resolve().parents[3])
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from rag_pipeline.utils.config import get_logger, data_vectorization_config
+from rag_pipeline.utils.config import get_logger, data_paths, model_config, data_vectorization_config
 from dotenv import load_dotenv
 
 from transformers import AutoTokenizer
@@ -20,8 +20,7 @@ from transformers import logging as hf_logging
 from transformers.utils.logging import disable_progress_bar
 
 # Configure data paths
-DATASET_PATH = data_vectorization_config["dataset_path"].item()
-CORPUS_PATH = data_vectorization_config["corpus_path"].item()
+CORPUS_PATH = data_paths["corpus_path"].item()
 
 logger = get_logger("corpus_chunker")
 
@@ -35,7 +34,7 @@ hf_logging.set_verbosity_error()
 
 disable_progress_bar()
 
-tokenizer = AutoTokenizer.from_pretrained(data_vectorization_config["embedder_model"].item())
+tokenizer = AutoTokenizer.from_pretrained(model_config["embedder_model"].item())
 
 logger.info(f"Loading chunkers from chonkie.")
 
@@ -48,7 +47,7 @@ sentence_chunker = SentenceChunker(
 
 # Initialize SemanticChunker for Wikipedia (Long-form articles)
 semantic_chunker = SemanticChunker(
-    embedding_model=data_vectorization_config["chunker_model"].item(),
+    embedding_model=model_config["chunker_model"].item(),
     chunk_size=data_vectorization_config["semantic_chunk_size"].item(),
     threshold=data_vectorization_config["threshold"].item(),
     skip_window=data_vectorization_config["skip_window"].item(), 
@@ -149,7 +148,7 @@ def clean_wikipedia_text(text: str) -> str:
 data_chunks = []
 
 logger.info(f"Processing arXiv data.")
-arxiv_data = pl.read_parquet(DATASET_PATH / "arxiv_records.parquet")
+arxiv_data = pl.read_parquet(data_paths["arxiv_records_path"].item())
 
 for row in arxiv_data.iter_rows(named=True):
     text_to_chunk = f"{row["title"]}. {row["abstract"]}"
@@ -168,7 +167,7 @@ for row in arxiv_data.iter_rows(named=True):
 logger.info(f"Finished processing arXiv data.")
 
 logger.info(f"Processing PubMed data.")
-pubmed_data = pl.read_parquet(DATASET_PATH / "pubmed_records.parquet")
+pubmed_data = pl.read_parquet(data_paths["pubmed_records_path"].item())
 
 for row in pubmed_data.iter_rows(named=True):
     text_to_chunk = f"{row["title"]}. {row["abstract"]}"
@@ -187,7 +186,7 @@ for row in pubmed_data.iter_rows(named=True):
 logger.info(f"Finished processing PubMed data.")
 
 logger.info(f"Processing Wikipedia data.")
-wiki_data = pl.read_parquet(DATASET_PATH / "wiki_records.parquet")
+wiki_data = pl.read_parquet(data_paths["wiki_records_path"].item())
 
 for row in wiki_data.iter_rows(named=True):
     clean_full_text = clean_wikipedia_text(row["full_text"])
@@ -207,7 +206,7 @@ for row in wiki_data.iter_rows(named=True):
 logger.info(f"Finished processing Wikipedia data.")
 
 logger.info(f"Processing curated data.")
-curated_data = pl.read_parquet(DATASET_PATH / "curated_records.parquet")
+curated_data = pl.read_parquet(data_paths["curated_records_path"].item())
 
 for row in curated_data.iter_rows(named=True):
     clean_full_text = clean_wikipedia_text(row["full_text"])
@@ -231,7 +230,7 @@ logger.info(f"Total chunks created: {len(data_chunks)}")
 
 # Save chunked data as both jsonl and parquet
 data_chunks_df = pl.DataFrame(data_chunks)
-data_chunks_df.write_ndjson(CORPUS_PATH / "knowledge_chunks.jsonl")
-data_chunks_df.write_parquet(CORPUS_PATH / "knowledge_chunks.parquet", compression="zstd")
+data_chunks_df.write_ndjson(data_paths["jsonl_chunk_path"].item())
+data_chunks_df.write_parquet(data_paths["jsonl_chunk_path"].item(), compression="zstd")
 
 logger.info(f"Saved {len(data_chunks)} chunks to disk at {CORPUS_PATH}.")

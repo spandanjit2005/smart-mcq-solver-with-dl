@@ -30,6 +30,35 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(
 def get_logger(name: str) -> logging.Logger:
     return logging.getLogger(f"{name}")
 
+# Define data paths for data ingestion and vectorization
+data_paths = pl.DataFrame({
+    "search_schedule_path": Path("rag_pipeline/data/search_schedules"),
+    "dataset_path": Path("rag_pipeline/data/dataset"),
+    "collection_log_path": Path("rag_pipeline/logs/data_collection"),
+
+    "corpus_path": Path("rag_pipeline/data/data_corpus"),
+    "vector_store_path": Path("rag_pipeline/data/vector_store"),
+
+    "arxiv_records_path": Path("rag_pipeline/data/dataset/arxiv_records.parquet"),
+    "pubmed_records_path": Path("rag_pipeline/data/dataset/pubmed_records.parquet"),
+    "wiki_records_path": Path("rag_pipeline/data/dataset/wiki_records.parquet"),
+    "curated_records_path": Path("rag_pipeline/data/dataset/curated_records.parquet"),
+
+    "jsonl_chunk_path": Path("rag_pipeline/data/data_corpus/knowledge_chunks.jsonl"),
+    "parquet_chunk_path":  Path("rag_pipeline/data/data_corpus/knowledge_chunks.parquet"),
+
+    "embeddings_path": Path("rag_pipeline/data/vector_store/knowledge_embeddings.joblib"),
+    "chroma_db_path": Path("rag_pipeline/data/vector_store/mcq_knowledge_db")
+})
+
+# Define models to use in the RAG Pipeline
+model_config = pl.DataFrame({
+    "chunker_model": "Qwen/Qwen3-Embedding-0.6B",
+    "embedder_model": "Qwen/Qwen3-Embedding-4B",
+    "reranker_model": "Qwen/Qwen3-Reranker-4B",
+    "generative_slm": "Qwen/Qwen2.5-14B-Instruct"
+})
+
 # Define data ingestion config
 data_ingestion_config = pl.DataFrame({
     "arxiv_delay_seconds": 3.05,
@@ -43,8 +72,6 @@ data_ingestion_config = pl.DataFrame({
 
 # Define data vectorization config
 data_vectorization_config = pl.DataFrame({
-    "chunker_model": "Qwen/Qwen3-Embedding-0.6B",
-    "embedder_model": "Qwen/Qwen3-Embedding-4B",
     "embed_dim": 2560,
     "embed_batch_size": 32,
 
@@ -55,9 +82,16 @@ data_vectorization_config = pl.DataFrame({
     "threshold": 0.7,
     "skip_window": 0, 
     "filter_window": 7,
-    "similarity_window": 2,
+    "similarity_window": 2
+})
 
-    "dataset_path": Path("rag_pipeline/data/dataset"),
-    "corpus_path": Path("rag_pipeline/data/data_corpus"),
-    "vector_store_path": Path("rag_pipeline/data/vector_store")
+# Define chroma db config
+chroma_db_config = pl.DataFrame({
+    "chroma_db_name": "mcq_knowledge_db",
+
+    "hnsw:space": "cosine",         
+    "hnsw:M": 64,
+    "hnsw:construction_ef": 256,
+    "hnsw:search_ef": 128,
+    "hnsw:batch_size": 128
 })

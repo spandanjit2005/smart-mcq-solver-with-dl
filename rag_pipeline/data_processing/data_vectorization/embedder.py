@@ -9,7 +9,7 @@ project_root = str(Path(__file__).resolve().parents[3])
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from rag_pipeline.utils.config import get_logger, data_vectorization_config
+from rag_pipeline.utils.config import get_logger, data_paths, model_config, data_vectorization_config
 from dotenv import load_dotenv
 
 from sentence_transformers import SentenceTransformer
@@ -17,10 +17,10 @@ from sentence_transformers import SentenceTransformer
 from transformers import logging as hf_logging
 from transformers.utils.logging import disable_progress_bar
 
-CHUNKED_DATA_PARQUET = data_vectorization_config["dataset_path"].item() / "knowledge_chunks.parquet"
-EMBEDDED_DATA_JOBLIB = data_vectorization_config["vector_store_path"].item() / "knowledge_embeddings.joblib"
+CHUNKED_DATA_PARQUET = data_paths["parquet_chunk_path"].item()
+EMBEDDED_DATA_JOBLIB = data_paths["embeddings_path"].item()
 
-EMBEDDING_MODEL = data_vectorization_config["embedder_model"].item()
+EMBEDDING_MODEL = model_config["embedder_model"].item()
 
 EMBED_DIM = data_vectorization_config["embed_dim"].item()
 BATCH_SIZE = data_vectorization_config["embed_batch_size"].item()
