@@ -1,28 +1,18 @@
 [project]
-name = "smart-mcq-colver-with-dl"
+name = "smart-mcq-dl-rag-pipeline"
 version = "0.1.0"
 description = "Code for 26T2 Introduction to Deep Learning and Generative AI Project of the IITM BS in Data Science Program."
 readme = "README.md"
 requires-python = "==3.14.5"
 dependencies = [
-    "arxiv==4.0.0",
-    "beautifulsoup4==4.15.0",
-    "biopython==1.87",
     "bitsandbytes==0.49.2",
     "chonkie[semantic,st]==1.6.8",
     "chromadb==1.5.9",
-    "datasets==5.0.0",
     "faiss-cpu==1.14.3",
     "hdbscan==0.8.44",
-    "ipykernel==7.3.0",
-    "kaggle==2.2.3",
-    "kaleido==1.3.0",
     "numpy==2.4.6",
     "optuna==4.9.0",
     "pacmap==0.9.1",
-    "pandas==3.0.3",
-    "peft==0.19.1",
-    "plotly==6.8.0",
     "polars==1.42.1",
     "python-dotenv==1.2.2",
     "scikit-learn==1.9.0",
@@ -34,5 +24,20 @@ dependencies = [
     "transformers==5.12.1",
     "umap-learn==0.5.12",
     "wandb==0.28.0",
+]
+
+[dependency-groups]
+dev = [
+    "arxiv==4.0.0",
+    "beautifulsoup4==4.15.0",
+    "biopython==1.87",
+    "datasets==5.0.0",
+    "ipykernel==7.3.0",
+    "kaggle==2.2.3",
+    "kaleido==1.3.0",
+    "pandas==3.0.3",
+    "peft==0.19.1",
+    "plotly==6.8.0",
+    "sentencepiece==0.2.2",
     "wikipedia-api==0.15.0",
 ]
