@@ -17,13 +17,13 @@ from sentence_transformers import SentenceTransformer
 from transformers import logging as hf_logging
 from transformers.utils.logging import disable_progress_bar
 
-CHUNKED_DATA_PARQUET = data_paths["parquet_chunk_path"].item()
-EMBEDDED_DATA_JOBLIB = data_paths["embeddings_path"].item()
+CHUNKED_DATA_PARQUET = data_paths["parquet_chunk_path"]
+EMBEDDED_DATA_JOBLIB = data_paths["embeddings_path"]
 
-EMBEDDING_MODEL = model_config["embedder_model"].item()
+EMBEDDING_MODEL = model_config["embedder_model"]
 
-EMBED_DIM = data_vectorization_config["embed_dim"].item()
-BATCH_SIZE = data_vectorization_config["embed_batch_size"].item()
+EMBED_DIM = data_vectorization_config["embed_dim"]
+BATCH_SIZE = data_vectorization_config["embed_batch_size"]
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 logger = get_logger("corpus_embedder")

@@ -17,9 +17,9 @@ from utils.pubmed_utils import fetch_pubmed_data
 from utils.wiki_utils import fetch_wiki_data
 from utils.curated_utils import fetch_curated_data
 
-SEARCH_SCHEDULE_DIR = data_paths["search_schedule_path"].item()
-OUTPUT_DATASET_DIR = data_paths["dataset_path"].item()
-OUTPUT_LOG_DIR = data_paths["dataset_path"].item()
+SEARCH_SCHEDULE_DIR = data_paths["search_schedule_path"]
+OUTPUT_DATASET_DIR = data_paths["dataset_path"]
+OUTPUT_LOG_DIR = data_paths["dataset_path"]
 
 data_logger = get_logger("all_data")
 
@@ -28,7 +28,7 @@ def force_kill_handler(signum, frame):
     os._exit(1)
 
 def parallel_ingestion(
-    config_data: pl.DataFrame,
+    config_data: dict[str, str],
     INPUT_CSV: Path,
     OUTPUT_DATASET_DIR: Path,
     OUTPUT_LOG_DIR: Path,

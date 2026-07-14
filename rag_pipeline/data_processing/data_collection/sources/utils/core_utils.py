@@ -70,16 +70,16 @@ def select_diverse_keywords_clustered(clusters: list[list[str]], k: int = 5) -> 
 
 # Define generic function to compute arXiv and PubMed query plans
 def compute_query_plan(
-        config_data: pl.DataFrame, 
+        config_data: dict[str, int], 
         query_data: pl.DataFrame, 
         DOMAIN_COL: str,
         logger: logging.Logger
 ) -> pl.DataFrame:
     
-    TOTAL_RESULTS_PER_DOMAIN = config_data["TOTAL_RESULTS_PER_DOMAIN"].item()
-    MAX_QUERIES_PER_DOMAIN = config_data["MAX_QUERIES_PER_DOMAIN"].item()
-    MIN_RESULTS_PER_QUERY = config_data["MIN_RESULTS_PER_QUERY"].item()
-    MAX_RESULTS_HARD_CAP = config_data["MAX_RESULTS_HARD_CAP"].item()
+    TOTAL_RESULTS_PER_DOMAIN = config_data["TOTAL_RESULTS_PER_DOMAIN"]
+    MAX_QUERIES_PER_DOMAIN = config_data["MAX_QUERIES_PER_DOMAIN"]
+    MIN_RESULTS_PER_QUERY = config_data["MIN_RESULTS_PER_QUERY"]
+    MAX_RESULTS_HARD_CAP = config_data["MAX_RESULTS_HARD_CAP"]
 
     plans = []
 

@@ -8,7 +8,7 @@ from datetime import datetime
 from rag_pipeline.utils.config import IST, get_logger, data_ingestion_config
 from utils.core_utils import parse_nested_keywords, compute_query_plan, save_scraped_data
 
-DELAY_SECONDS = data_ingestion_config["arxiv_delay_seconds"].item()
+DELAY_SECONDS = data_ingestion_config["arxiv_delay_seconds"]
 
 ARXIV_CLIENT = arxiv.Client(
     page_size=75,
@@ -80,7 +80,7 @@ def _fetch_arxiv_papers(query_plan: pl.DataFrame) -> tuple[pl.DataFrame, pl.Data
     return records, run_log
 
 def fetch_arxiv_data(
-        config_data: pl.DataFrame,
+        config_data: dict[str, int],
         INPUT_CSV: Path, 
         OUTPUT_RECORDS: Path,
         OUTPUT_LOGS: Path

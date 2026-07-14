@@ -20,7 +20,7 @@ from transformers import logging as hf_logging
 from transformers.utils.logging import disable_progress_bar
 
 # Configure data paths
-CORPUS_PATH = data_paths["corpus_path"].item()
+CORPUS_PATH = data_paths["corpus_path"]
 
 logger = get_logger("corpus_chunker")
 
@@ -34,25 +34,25 @@ hf_logging.set_verbosity_error()
 
 disable_progress_bar()
 
-tokenizer = AutoTokenizer.from_pretrained(model_config["embedder_model"].item())
+tokenizer = AutoTokenizer.from_pretrained(model_config["embedder_model"])
 
 logger.info(f"Loading chunkers from chonkie.")
 
 # Initialize SentenceChunker for arXiv/PubMed (Academic abstracts)
 sentence_chunker = SentenceChunker(
     tokenizer=tokenizer,
-    chunk_size=data_vectorization_config["sentence_chunk_size"].item(),
-    chunk_overlap=data_vectorization_config["sentence_chunk_overlap"].item()
+    chunk_size=data_vectorization_config["sentence_chunk_size"],
+    chunk_overlap=data_vectorization_config["sentence_chunk_overlap"]
 )
 
 # Initialize SemanticChunker for Wikipedia (Long-form articles)
 semantic_chunker = SemanticChunker(
-    embedding_model=model_config["chunker_model"].item(),
-    chunk_size=data_vectorization_config["semantic_chunk_size"].item(),
-    threshold=data_vectorization_config["threshold"].item(),
-    skip_window=data_vectorization_config["skip_window"].item(), 
-    filter_window=data_vectorization_config["filter_window"].item(),
-    similarity_window=data_vectorization_config["similarity_window"].item()
+    embedding_model=model_config["chunker_model"],
+    chunk_size=data_vectorization_config["semantic_chunk_size"],
+    threshold=data_vectorization_config["threshold"],
+    skip_window=data_vectorization_config["skip_window"], 
+    filter_window=data_vectorization_config["filter_window"],
+    similarity_window=data_vectorization_config["similarity_window"]
 )
 
 # Define function to clean Wikipedia sections and delete math markers
@@ -148,7 +148,7 @@ def clean_wikipedia_text(text: str) -> str:
 data_chunks = []
 
 logger.info(f"Processing arXiv data.")
-arxiv_data = pl.read_parquet(data_paths["arxiv_records_path"].item())
+arxiv_data = pl.read_parquet(data_paths["arxiv_records_path"])
 
 for row in arxiv_data.iter_rows(named=True):
     text_to_chunk = f"{row["title"]}. {row["abstract"]}"
@@ -167,7 +167,7 @@ for row in arxiv_data.iter_rows(named=True):
 logger.info(f"Finished processing arXiv data.")
 
 logger.info(f"Processing PubMed data.")
-pubmed_data = pl.read_parquet(data_paths["pubmed_records_path"].item())
+pubmed_data = pl.read_parquet(data_paths["pubmed_records_path"])
 
 for row in pubmed_data.iter_rows(named=True):
     text_to_chunk = f"{row["title"]}. {row["abstract"]}"
@@ -186,7 +186,7 @@ for row in pubmed_data.iter_rows(named=True):
 logger.info(f"Finished processing PubMed data.")
 
 logger.info(f"Processing Wikipedia data.")
-wiki_data = pl.read_parquet(data_paths["wiki_records_path"].item())
+wiki_data = pl.read_parquet(data_paths["wiki_records_path"])
 
 for row in wiki_data.iter_rows(named=True):
     clean_full_text = clean_wikipedia_text(row["full_text"])
@@ -206,7 +206,7 @@ for row in wiki_data.iter_rows(named=True):
 logger.info(f"Finished processing Wikipedia data.")
 
 logger.info(f"Processing curated data.")
-curated_data = pl.read_parquet(data_paths["curated_records_path"].item())
+curated_data = pl.read_parquet(data_paths["curated_records_path"])
 
 for row in curated_data.iter_rows(named=True):
     clean_full_text = clean_wikipedia_text(row["full_text"])
@@ -230,7 +230,7 @@ logger.info(f"Total chunks created: {len(data_chunks)}")
 
 # Save chunked data as both jsonl and parquet
 data_chunks_df = pl.DataFrame(data_chunks)
-data_chunks_df.write_ndjson(data_paths["jsonl_chunk_path"].item())
-data_chunks_df.write_parquet(data_paths["parquet_chunk_path"].item(), compression="zstd")
+data_chunks_df.write_ndjson(data_paths["jsonl_chunk_path"])
+data_chunks_df.write_parquet(data_paths["parquet_chunk_path"], compression="zstd")
 
 logger.info(f"Saved {len(data_chunks)} chunks to disk at {CORPUS_PATH}.")

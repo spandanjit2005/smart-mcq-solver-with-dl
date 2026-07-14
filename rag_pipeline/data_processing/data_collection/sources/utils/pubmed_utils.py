@@ -106,7 +106,7 @@ def _fetch_pubmed_papers(query_plan: pl.DataFrame) -> tuple[pl.DataFrame, pl.Dat
     return records, run_log
 
 def fetch_pubmed_data(
-        config_data: pl.DataFrame,
+        config_data: dict[str, int],
         INPUT_CSV: Path, 
         OUTPUT_RECORDS: Path,
         OUTPUT_LOGS: Path

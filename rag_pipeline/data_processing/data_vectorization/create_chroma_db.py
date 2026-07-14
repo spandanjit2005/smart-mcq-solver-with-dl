@@ -12,10 +12,10 @@ if project_root not in sys.path:
 from rag_pipeline.utils.config import get_logger, data_paths, chroma_db_config
 
 
-VECTOR_STORE_PATH = data_paths["vector_store_path"].item()
+VECTOR_STORE_PATH = data_paths["vector_store_path"]
 
-EMBEDDINGS_PATH = data_paths["embeddings_path"].item()
-CHROMA_DB_PATH = data_paths["chroma_db_path"].item()
+EMBEDDINGS_PATH = data_paths["embeddings_path"]
+CHROMA_DB_PATH = data_paths["chroma_db_path"]
 
 logger = get_logger("chroma_creator")
 
@@ -44,15 +44,15 @@ logger.info(f"Creating Chroma DB persistent client.")
 chroma_client = chromadb.PersistentClient(path=CHROMA_DB_PATH)
 
 collection = chroma_client.create_collection(
-    name=chroma_db_config["chroma_db_name"].item(),
+    name=chroma_db_config["chroma_db_name"],
     metadata={
-        "hnsw:space": chroma_db_config["hnsw:space"].item(),
-        "hnsw:M": chroma_db_config["hnsw:M"].item(),
+        "hnsw:space": chroma_db_config["hnsw:space"],
+        "hnsw:M": chroma_db_config["hnsw:M"],
 
-        "hnsw:construction_ef": chroma_db_config["hnsw:construction_ef"].item(),
-        "hnsw:search_ef": chroma_db_config["hnsw:search_ef"].item(),
+        "hnsw:construction_ef": chroma_db_config["hnsw:construction_ef"],
+        "hnsw:search_ef": chroma_db_config["hnsw:search_ef"],
 
-        "hnsw:batch_size": chroma_db_config["hnsw:batch_size"].item()
+        "hnsw:batch_size": chroma_db_config["hnsw:batch_size"]
     }
 )
 

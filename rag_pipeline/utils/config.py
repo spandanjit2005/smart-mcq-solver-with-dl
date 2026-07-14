@@ -1,7 +1,5 @@
 import logging
 
-import polars as pl
-
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
 
@@ -31,7 +29,7 @@ def get_logger(name: str) -> logging.Logger:
     return logging.getLogger(f"{name}")
 
 # Define data paths for data ingestion and vectorization
-data_paths = pl.DataFrame({
+data_paths = {
     "search_schedule_path": Path("rag_pipeline/data/search_schedules"),
     "dataset_path": Path("rag_pipeline/data/dataset"),
     "collection_log_path": Path("rag_pipeline/logs/data_collection"),
@@ -49,18 +47,18 @@ data_paths = pl.DataFrame({
 
     "embeddings_path": Path("rag_pipeline/data/vector_store/knowledge_embeddings.joblib"),
     "chroma_db_path": Path("rag_pipeline/data/vector_store/mcq_knowledge_db")
-})
+}
 
 # Define models to use in the RAG Pipeline
-model_config = pl.DataFrame({
+model_config = {
     "chunker_model": "Qwen/Qwen3-Embedding-0.6B",
     "embedder_model": "Qwen/Qwen3-Embedding-4B",
     "reranker_model": "Qwen/Qwen3-Reranker-4B",
     "generative_slm": "Qwen/Qwen2.5-14B-Instruct"
-})
+}
 
 # Define data ingestion config
-data_ingestion_config = pl.DataFrame({
+data_ingestion_config = {
     "arxiv_delay_seconds": 3.05,
     "wiki_delay_seconds": 1.0,
 
@@ -68,10 +66,10 @@ data_ingestion_config = pl.DataFrame({
     "MAX_QUERIES_PER_DOMAIN": 15,
     "MIN_RESULTS_PER_QUERY": 5,
     "MAX_RESULTS_HARD_CAP": 75
-})
+}
 
 # Define data vectorization config
-data_vectorization_config = pl.DataFrame({
+data_vectorization_config = {
     "embed_dim": 2560,
     "embed_batch_size": 32,
 
@@ -83,10 +81,10 @@ data_vectorization_config = pl.DataFrame({
     "skip_window": 0, 
     "filter_window": 7,
     "similarity_window": 2
-})
+}
 
 # Define chroma db config
-chroma_db_config = pl.DataFrame({
+chroma_db_config = {
     "chroma_db_name": "mcq_knowledge_db",
 
     "hnsw:space": "cosine",         
@@ -94,4 +92,4 @@ chroma_db_config = pl.DataFrame({
     "hnsw:construction_ef": 256,
     "hnsw:search_ef": 128,
     "hnsw:batch_size": 128
-})
+}

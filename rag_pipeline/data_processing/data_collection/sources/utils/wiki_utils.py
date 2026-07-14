@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from rag_pipeline.utils.config import IST, get_logger, data_ingestion_config
 from utils.core_utils import parse_nested_keywords, select_diverse_keywords_clustered, save_scraped_data
 
-DELAY_SECONDS = data_ingestion_config["wiki_delay_seconds"].item()
+DELAY_SECONDS = data_ingestion_config["wiki_delay_seconds"]
 
 load_dotenv()
 USER_AGENT = f"RAGCorpusHarvester/1.0 ({os.getenv("API_CONTACT_EMAIL")})"
@@ -60,8 +60,8 @@ def _load_curated_titles(curated_path: Path) -> set[str]:
 
     return titles
 
-def _compute_wiki_query_plan(config_data: pl.DataFrame, query_data: pl.DataFrame) -> pl.DataFrame:
-    MAX_QUERIES_PER_DOMAIN = config_data["MAX_QUERIES_PER_DOMAIN"].item()
+def _compute_wiki_query_plan(config_data: dict[str, int], query_data: pl.DataFrame) -> pl.DataFrame:
+    MAX_QUERIES_PER_DOMAIN = config_data["MAX_QUERIES_PER_DOMAIN"]
     
     plans = []
 
@@ -151,7 +151,7 @@ def _fetch_wiki_pages(
     return records, run_log
 
 def fetch_wiki_data(
-        config_data: pl.DataFrame,
+        config_data: dict[str, int],
         INPUT_CSV: Path, 
         CURATED_CSV: Path,
         OUTPUT_RECORDS: Path,
