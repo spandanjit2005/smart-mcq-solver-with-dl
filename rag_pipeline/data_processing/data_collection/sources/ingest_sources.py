@@ -1,8 +1,6 @@
 import os, sys, time, signal
 import concurrent.futures
 
-import polars as pl
-
 from pathlib import Path
 
 project_root = str(Path(__file__).resolve().parents[4])
@@ -19,7 +17,7 @@ from utils.curated_utils import fetch_curated_data
 
 SEARCH_SCHEDULE_DIR = data_paths["search_schedule_path"]
 OUTPUT_DATASET_DIR = data_paths["dataset_path"]
-OUTPUT_LOG_DIR = data_paths["dataset_path"]
+OUTPUT_LOG_DIR = data_paths["collection_log_path"]
 
 data_logger = get_logger("all_data")
 
@@ -81,7 +79,7 @@ def parallel_ingestion(
         }
     }
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
         future_to_source = {
             executor.submit(task_info["func"], **task_info["kwargs"]): source_name
             for source_name, task_info in tasks.items()
@@ -98,7 +96,7 @@ def parallel_ingestion(
                 data_logger.error(f"{source_name.upper()} ingestion generated an exception: {exc}")
     
     total_time = time.perf_counter() - start_time
-    data_logger.info(f"All parallel ingestion tasks finished in {total_time // 60} mins {(total_time / 60):.4f} s.")
+    data_logger.info(f"All parallel ingestion tasks finished in {int(total_time // 60)} mins {(total_time / 60):.4f} s.")
 
 if __name__ == "__main__":
     

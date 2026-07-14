@@ -1,4 +1,4 @@
-import os, re, sys, logging
+import os, re, sys, torch
 
 import polars as pl
 
@@ -13,11 +13,17 @@ from rag_pipeline.utils.config import get_logger, data_paths, model_config, data
 from dotenv import load_dotenv
 
 from transformers import AutoTokenizer
+from sentence_transformers import SentenceTransformer
 
 from chonkie import SentenceChunker, SemanticChunker
+from chonkie.embeddings import SentenceTransformerEmbeddings
 
 from transformers import logging as hf_logging
 from transformers.utils.logging import disable_progress_bar
+
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+base_embedder = SentenceTransformer(model_config["chunker_model"], device=DEVICE)
+chonkie_embedder = SentenceTransformerEmbeddings(base_embedder)
 
 # Configure data paths
 CORPUS_PATH = data_paths["corpus_path"]
@@ -47,7 +53,7 @@ sentence_chunker = SentenceChunker(
 
 # Initialize SemanticChunker for Wikipedia (Long-form articles)
 semantic_chunker = SemanticChunker(
-    embedding_model=model_config["chunker_model"],
+    embedding_model=chonkie_embedder, 
     chunk_size=data_vectorization_config["semantic_chunk_size"],
     threshold=data_vectorization_config["threshold"],
     skip_window=data_vectorization_config["skip_window"], 
@@ -59,7 +65,7 @@ semantic_chunker = SemanticChunker(
 SECTION_STOPWORDS = {
     "references", "further reading", "external links", "see also",
     "notes", "bibliography", "citations", "sources", "footnotes",
-    "gallery", "in popular culture",
+    "gallery", "in popular culture"
 }
 
 TEX_START = re.compile(r"\{\\(displaystyle|textstyle|scriptstyle|scriptscriptstyle)\b")
@@ -229,6 +235,8 @@ logger.info(f"Finished processing curated data.")
 logger.info(f"Total chunks created: {len(data_chunks)}")
 
 # Save chunked data as both jsonl and parquet
+CORPUS_PATH.mkdir(parents=True, exist_ok=True)
+
 data_chunks_df = pl.DataFrame(data_chunks)
 data_chunks_df.write_ndjson(data_paths["jsonl_chunk_path"])
 data_chunks_df.write_parquet(data_paths["parquet_chunk_path"], compression="zstd")

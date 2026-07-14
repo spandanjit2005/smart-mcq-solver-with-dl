@@ -78,6 +78,8 @@ assert embeddings.shape == (n_chunks, EMBED_DIM), f"Unexpected shape: {embedding
 logger.info(f"Embedded {n_chunks} across {n_chunks // BATCH_SIZE} batches.")
 
 logger.info(f"Saving embedding data to {EMBEDDED_DATA_JOBLIB}")
+EMBEDDED_DATA_JOBLIB.parent.mkdir(parents=True, exist_ok=True)
+
 joblib.dump({
     "embeddings": embeddings,   # numpy array shape (n_chunks, EMBED_DIM)
     "chunk_ids": chunk_ids,     # list of strings - globally unique

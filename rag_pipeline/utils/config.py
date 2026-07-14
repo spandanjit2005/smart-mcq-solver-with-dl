@@ -46,7 +46,7 @@ data_paths = {
     "parquet_chunk_path":  Path("rag_pipeline/data/data_corpus/knowledge_chunks.parquet"),
 
     "embeddings_path": Path("rag_pipeline/data/vector_store/knowledge_embeddings.joblib"),
-    "chroma_db_path": Path("rag_pipeline/data/vector_store/mcq_knowledge_db")
+    "chroma_db_path": Path("rag_pipeline/data/vector_store/knowledge_db")
 }
 
 # Define models to use in the RAG Pipeline
@@ -85,7 +85,7 @@ data_vectorization_config = {
 
 # Define chroma db config
 chroma_db_config = {
-    "chroma_db_name": "mcq_knowledge_db",
+    "chroma_db_name": "knowledge_db",
 
     "hnsw:space": "cosine",         
     "hnsw:M": 64,
