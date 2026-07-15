@@ -1,4 +1,4 @@
-import sys, joblib, chromadb
+import sys, shutil, joblib, chromadb
 
 import numpy as np
 
@@ -16,6 +16,9 @@ VECTOR_STORE_PATH = data_paths["vector_store_path"]
 
 EMBEDDINGS_PATH = data_paths["embeddings_path"]
 CHROMA_DB_PATH = data_paths["chroma_db_path"]
+
+if CHROMA_DB_PATH.exists():
+    shutil.rmtree(CHROMA_DB_PATH)
 
 logger = get_logger("chroma_creator")
 
@@ -35,6 +38,7 @@ urls = data["urls"]
 dim = data["dim"]
 
 n_vectors = embeddings.shape[0]
+assert len(set(chunk_ids)) == len(chunk_ids), "Duplicate chunk_ids detected before insertion"
 assert embeddings.shape == (n_vectors, dim), "Mismatch between embeddings and chunk metadata rows"
 assert embeddings.dtype == np.float32, f"Embeddings must be float32 datatype, found embeddings of type: {embeddings.dtype}"
 
@@ -69,6 +73,7 @@ batch_size = chroma_client.get_max_batch_size()
 total_batches = (n_vectors + batch_size - 1) // batch_size
 
 logger.info(f"Adding data to chroma db client in {total_batches} batches of batch size = {batch_size}")
+
 for i in range(0, len(chunk_ids), batch_size):
     end_idx = min(i + batch_size, len(chunk_ids))
 
@@ -78,4 +83,24 @@ for i in range(0, len(chunk_ids), batch_size):
         documents=texts[i:end_idx],
         metadatas=chroma_metadata[i:end_idx] # type: ignore
     )
-logger.info(f"Added data to chroma db.")
+    
+logger.info("Insertion loop complete. Verifying by re-opening client from disk.")
+
+del collection, chroma_client
+
+verify_client = chromadb.PersistentClient(path=CHROMA_DB_PATH)
+verify_collection = verify_client.get_collection(name=chroma_db_config["chroma_db_name"])
+
+actual_count = verify_collection.count()
+assert actual_count == n_vectors, f"Expected {n_vectors}, found {actual_count}"
+
+all_embeddings_check = verify_collection.get(include=["embeddings"])
+assert len(all_embeddings_check["ids"]) == n_vectors, \
+    f"Expected {n_vectors} embeddings, got {len(all_embeddings_check['ids'])}"
+
+embs = np.array(all_embeddings_check["embeddings"], dtype=np.float32)
+norms = np.linalg.norm(embs, axis=1)
+assert (norms > 0).all(), f"{(norms == 0).sum()} zero-norm embeddings found"
+assert not np.isnan(embs).any(), "NaN values found in embeddings"
+
+logger.info(f"Full verification passed: all {n_vectors} embeddings present and valid.")
