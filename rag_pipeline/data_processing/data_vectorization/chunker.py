@@ -148,6 +148,7 @@ def clean_wikipedia_text(text: str) -> str:
     # Whitespace cleanup
     text = re.sub(r"[ \t]+", " ", text)
     text = re.sub(r"\n{3,}", "\n\n", text)
+
     return text.strip()
 
 # Start chunking data
@@ -197,7 +198,7 @@ wiki_data = pl.read_parquet(data_paths["wiki_records_path"])
 for row in wiki_data.iter_rows(named=True):
     clean_full_text = clean_wikipedia_text(row["full_text"])
     text_to_chunk = f"{row['title']}. {row['abstract']} {clean_full_text}"
-    chunks = semantic_chunker(text_to_chunk)
+    chunks = sentence_chunker(text_to_chunk)
     
     for chunk in chunks:
         wiki_chunk = {
@@ -217,7 +218,7 @@ curated_data = pl.read_parquet(data_paths["curated_records_path"])
 for row in curated_data.iter_rows(named=True):
     clean_full_text = clean_wikipedia_text(row["full_text"])
     text_to_chunk = f"{row['title']}. {row['abstract']} {clean_full_text}"
-    chunks = semantic_chunker(text_to_chunk)
+    chunks = sentence_chunker(text_to_chunk)
     
     for chunk in chunks:
         curated_chunk = {

@@ -71,7 +71,7 @@ data_ingestion_config = {
 # Define data vectorization config
 data_vectorization_config = {
     "embed_dim": 2560,
-    "embed_batch_size": 32,
+    "embed_batch_size": 16,
 
     "sentence_chunk_size": 512,
     "sentence_chunk_overlap": 128,

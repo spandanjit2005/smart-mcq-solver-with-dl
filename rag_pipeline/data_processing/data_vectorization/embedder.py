@@ -1,4 +1,4 @@
-import os, sys, torch, joblib, logging
+import os, sys, torch, joblib
 
 import polars as pl
 
@@ -24,7 +24,7 @@ EMBEDDING_MODEL = model_config["embedder_model"]
 
 EMBED_DIM = data_vectorization_config["embed_dim"]
 BATCH_SIZE = data_vectorization_config["embed_batch_size"]
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+DEVICE = "cuda:1" if torch.cuda.is_available() else "cpu"
 
 logger = get_logger("corpus_embedder")
 
