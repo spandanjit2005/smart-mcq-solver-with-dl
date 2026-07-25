@@ -1,9 +1,10 @@
 import logging
 
 from pathlib import Path
-from datetime import datetime, timezone, timedelta
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
-IST = timezone(timedelta(hours=5, minutes=30))
+IST = ZoneInfo("Asia/Kolkata")
 
 # Define Logger config
 logging.Formatter.converter = staticmethod(
@@ -53,8 +54,14 @@ data_paths = {
 model_config = {
     "chunker_model": "Qwen/Qwen3-Embedding-0.6B",
     "embedder_model": "Qwen/Qwen3-Embedding-4B",
-    "reranker_model": "Qwen/Qwen3-Reranker-4B",
+    "reranker_model": "Qwen/Qwen3-Reranker-8B",
     "generative_slm": "Qwen/Qwen2.5-14B-Instruct"
+}
+
+local_model_config = {
+    "embedder_model": "qwen3-embedding-4b",
+    "reranker_model": "qwen3-reranker-8B",
+    "generative_slm": "qwen2.5-14b-instruct"
 }
 
 # Define data ingestion config
