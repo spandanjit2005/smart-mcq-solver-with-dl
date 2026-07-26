@@ -13,17 +13,13 @@ from rag_pipeline.utils.config import get_logger, data_paths, model_config, data
 from dotenv import load_dotenv
 
 from transformers import AutoTokenizer
-from sentence_transformers import SentenceTransformer
 
 from chonkie import SentenceChunker
-from chonkie.embeddings import SentenceTransformerEmbeddings
 
 from transformers import logging as hf_logging
 from transformers.utils.logging import disable_progress_bar
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-base_embedder = SentenceTransformer(model_config["chunker_model"], device=DEVICE)
-chonkie_embedder = SentenceTransformerEmbeddings(base_embedder)
 
 # Configure data paths
 CORPUS_PATH = data_paths["corpus_path"]

@@ -43,6 +43,7 @@ data_paths = {
     "wiki_records_path": Path("rag_pipeline/data/dataset/wiki_records.parquet"),
     "curated_records_path": Path("rag_pipeline/data/dataset/curated_records.parquet"),
 
+    "curated_data_path": Path("rag_pipeline/data/data_corpus/curated_data.parquet"),
     "jsonl_chunk_path": Path("rag_pipeline/data/data_corpus/knowledge_chunks.jsonl"),
     "parquet_chunk_path":  Path("rag_pipeline/data/data_corpus/knowledge_chunks.parquet"),
 
@@ -52,7 +53,6 @@ data_paths = {
 
 # Define models to use in the RAG Pipeline
 model_config = {
-    "chunker_model": "Qwen/Qwen3-Embedding-0.6B",
     "embedder_model": "Qwen/Qwen3-Embedding-4B",
     "reranker_model": "Qwen/Qwen3-Reranker-8B",
     "generative_slm": "Qwen/Qwen2.5-14B-Instruct"
@@ -69,10 +69,10 @@ data_ingestion_config = {
     "arxiv_delay_seconds": 3.05,
     "wiki_delay_seconds": 1.0,
 
-    "TOTAL_RESULTS_PER_DOMAIN": 75,
-    "MAX_QUERIES_PER_DOMAIN": 15,
+    "TOTAL_RESULTS_PER_DOMAIN": 50,
+    "MAX_QUERIES_PER_DOMAIN": 10,
     "MIN_RESULTS_PER_QUERY": 5,
-    "MAX_RESULTS_HARD_CAP": 75
+    "MAX_RESULTS_HARD_CAP": 50
 }
 
 # Define data vectorization config
