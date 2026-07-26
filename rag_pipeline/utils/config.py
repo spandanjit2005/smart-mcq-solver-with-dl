@@ -81,13 +81,7 @@ data_vectorization_config = {
     "embed_batch_size": 16,
 
     "sentence_chunk_size": 512,
-    "sentence_chunk_overlap": 128,
-
-    "semantic_chunk_size": 768,
-    "threshold": 0.7,
-    "skip_window": 0, 
-    "filter_window": 7,
-    "similarity_window": 2
+    "sentence_chunk_overlap": 128
 }
 
 # Define chroma db config

@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 from transformers import AutoTokenizer
 from sentence_transformers import SentenceTransformer
 
-from chonkie import SentenceChunker, SemanticChunker
+from chonkie import SentenceChunker
 from chonkie.embeddings import SentenceTransformerEmbeddings
 
 from transformers import logging as hf_logging
@@ -44,21 +44,11 @@ tokenizer = AutoTokenizer.from_pretrained(model_config["embedder_model"])
 
 logger.info(f"Loading chunkers from chonkie.")
 
-# Initialize SentenceChunker for arXiv/PubMed (Academic abstracts)
+# Initialize SentenceChunker
 sentence_chunker = SentenceChunker(
     tokenizer=tokenizer,
     chunk_size=data_vectorization_config["sentence_chunk_size"],
     chunk_overlap=data_vectorization_config["sentence_chunk_overlap"]
-)
-
-# Initialize SemanticChunker for Wikipedia (Long-form articles)
-semantic_chunker = SemanticChunker(
-    embedding_model=chonkie_embedder, 
-    chunk_size=data_vectorization_config["semantic_chunk_size"],
-    threshold=data_vectorization_config["threshold"],
-    skip_window=data_vectorization_config["skip_window"], 
-    filter_window=data_vectorization_config["filter_window"],
-    similarity_window=data_vectorization_config["similarity_window"]
 )
 
 # Define function to clean Wikipedia sections and delete math markers
