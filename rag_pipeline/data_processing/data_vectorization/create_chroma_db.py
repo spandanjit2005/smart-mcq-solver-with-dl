@@ -9,13 +9,14 @@ project_root = str(Path(__file__).resolve().parents[3])
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from rag_pipeline.utils.config import get_logger, data_paths, chroma_db_config
+from rag_pipeline.utils.config import get_logger, data_paths, data_vectorization_config, chroma_db_config
 
 
 VECTOR_STORE_PATH = data_paths["vector_store_path"]
-
 EMBEDDINGS_PATH = data_paths["embeddings_path"]
 CHROMA_DB_PATH = data_paths["chroma_db_path"]
+
+EMBED_DIM = data_vectorization_config["embed_dim"]
 
 if CHROMA_DB_PATH.exists():
     shutil.rmtree(CHROMA_DB_PATH)
@@ -26,20 +27,17 @@ logger.info(f"Loading embeddings from {EMBEDDINGS_PATH}.")
 
 data = joblib.load(EMBEDDINGS_PATH)
 
-chunk_ids = data["chunk_ids"]
-original_ids = data["orig_ids"]
-
-embeddings = data["embeddings"]
-texts = data["texts"]
-titles = data["titles"]
-
-sources = data["sources"]
-urls = data["urls"]
-dim = data["dim"]
+chunk_ids = data["chunk_id"]
+original_ids = data["original_id"]
+titles = data["title"]
+embeddings = data["embedding"]
+texts = data["text"]
+sources = data["source"]
+urls = data["url"]
 
 n_vectors = embeddings.shape[0]
 assert len(set(chunk_ids)) == len(chunk_ids), "Duplicate chunk_ids detected before insertion"
-assert embeddings.shape == (n_vectors, dim), "Mismatch between embeddings and chunk metadata rows"
+assert embeddings.shape == (n_vectors, EMBED_DIM), "Mismatch between embeddings and chunk metadata rows"
 assert embeddings.dtype == np.float32, f"Embeddings must be float32 datatype, found embeddings of type: {embeddings.dtype}"
 
 logger.info(f"Loaded {n_vectors} embeddings.")
@@ -52,18 +50,16 @@ collection = chroma_client.create_collection(
     metadata={
         "hnsw:space": chroma_db_config["hnsw:space"],
         "hnsw:M": chroma_db_config["hnsw:M"],
-
         "hnsw:construction_ef": chroma_db_config["hnsw:construction_ef"],
         "hnsw:search_ef": chroma_db_config["hnsw:search_ef"],
-
         "hnsw:batch_size": chroma_db_config["hnsw:batch_size"]
     }
 )
 
 chroma_metadata = [
     {
-        "source": sources[i],
         "title": titles[i],
+        "source": sources[i],
         "url": urls[i]
     }
     for i in range(len(embeddings))
