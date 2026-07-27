@@ -66,9 +66,9 @@ def main() -> None:
     if model.tokenizer.pad_token is None:
         model.tokenizer.pad_token = model.tokenizer.eos_token
 
-    model.model.config.pad_token_id = model.tokenizer.pad_token_id
-    model.model.config.use_cache = False
-    model.model.eval()
+    model.model.config.pad_token_id = model.tokenizer.pad_token_id # type: ignore
+    model.model.config.use_cache = False # type: ignore
+    model.model.eval() # type: ignore
 
     flat_pairs, boundaries = [], []
     idx = 0
