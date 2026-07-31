@@ -21,6 +21,3 @@ logs/
 
 # Kaggle upload files
 kaggle/
-
-# Temporarily stop tracking rag_pipeline
-# rag_pipeline/
