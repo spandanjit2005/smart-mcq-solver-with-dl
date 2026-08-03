@@ -1,5 +1,5 @@
 [project]
-name = "smart-mcq-dl-rag-pipeline"
+name = "smart-mcq-solver-with-dl"
 version = "0.1.0"
 description = "Code for 26T2 Introduction to Deep Learning and Generative AI Project of the IITM BS in Data Science Program."
 readme = "README.md"
@@ -36,8 +36,10 @@ dev = [
     "ipywidgets==8.1.8",
     "kaggle==2.2.3",
     "kaleido==1.3.0",
+    "keybert==0.9.0",
     "pandas==3.0.3",
     "plotly==6.8.0",
     "sentencepiece==0.2.2",
     "wikipedia-api==0.15.0",
+    "wordfreq==3.1.1",
 ]
