@@ -253,6 +253,26 @@ wheels = [
 ]
 
 [[package]]
+name = "bertopic"
+version = "0.17.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "hdbscan" },
+    { name = "llvmlite" },
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "plotly" },
+    { name = "scikit-learn" },
+    { name = "sentence-transformers" },
+    { name = "tqdm" },
+    { name = "umap-learn" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/72/ab/358923a516216964e150af7176dd3ea13737ddd25503517104f5562e301f/bertopic-0.17.4.tar.gz", hash = "sha256:f92aa560cdf2bcbf9e22c8ee83dd3bfb225b8dc29381dec7327cc0b21bd852ad", size = 121632, upload-time = "2025-12-03T14:19:34.402Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/81/d2/2eb2fec18b3d2cf487d5d1d9b484c6483c7f0f1a3c6f64e2bb9cb7972a3f/bertopic-0.17.4-py3-none-any.whl", hash = "sha256:0dbe7ee22c18fb76efe7f4fbf3a14b51c1e67d9fccc569e3f81e75b8f32646d1", size = 154669, upload-time = "2025-12-03T14:19:32.884Z" },
+]
+
+[[package]]
 name = "biopython"
 version = "1.87"
 source = { registry = "https://pypi.org/simple" }
@@ -1232,21 +1252,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/e0/64/53eac73d31dbfc3310ee2e87bcac1ae7417427f0fbe3dd800eaf676db324/kaleido-1.3.0.tar.gz", hash = "sha256:5e0378a7475e98852773deeb6483dee91f8aa7b364dde7b5f2b3622cb468a3e6", size = 68938, upload-time = "2026-05-04T19:45:28.932Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9e/b9/a6d8bb7d228940f01885bd9f327ab7f9d366a9be775c4bf366bf9d9477ae/kaleido-1.3.0-py3-none-any.whl", hash = "sha256:52714dfd38e8f2a114831826200c40bb10d0ca0c11d4272f3f48ad499cd8f8ea", size = 55580, upload-time = "2026-05-04T19:45:27.483Z" },
-]
-
-[[package]]
-name = "keybert"
-version = "0.9.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "numpy" },
-    { name = "rich" },
-    { name = "scikit-learn" },
-    { name = "sentence-transformers" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/b7/a8/a73003cc0f6a606eb30c9e19a85b5a89bef076e9adcb642aed29e47c693c/keybert-0.9.0.tar.gz", hash = "sha256:eec8ebd37d3d9fa238d7075e727adb993de4f3ed67c94112840e4cc0e55d7657", size = 32235, upload-time = "2025-02-07T08:45:13.187Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/82/07/e2f42a8ec3ff1935debbf2a5255570d22033fca3fe3180d5af99a6c9ee8c/keybert-0.9.0-py3-none-any.whl", hash = "sha256:afa2f300a72f69d279e4482bc85d8b34493b119876dc0818cb4f260466285b36", size = 41364, upload-time = "2025-02-07T08:45:08.093Z" },
 ]
 
 [[package]]
@@ -2889,12 +2894,12 @@ dependencies = [
 dev = [
     { name = "arxiv" },
     { name = "beautifulsoup4" },
+    { name = "bertopic" },
     { name = "biopython" },
     { name = "ipykernel" },
     { name = "ipywidgets" },
     { name = "kaggle" },
     { name = "kaleido" },
-    { name = "keybert" },
     { name = "pandas" },
     { name = "plotly" },
     { name = "sentencepiece" },
@@ -2930,12 +2935,12 @@ requires-dist = [
 dev = [
     { name = "arxiv", specifier = "==4.0.0" },
     { name = "beautifulsoup4", specifier = "==4.15.0" },
+    { name = "bertopic", specifier = "==0.17.4" },
     { name = "biopython", specifier = "==1.87" },
     { name = "ipykernel", specifier = "==7.3.0" },
     { name = "ipywidgets", specifier = "==8.1.8" },
     { name = "kaggle", specifier = "==2.2.3" },
     { name = "kaleido", specifier = "==1.3.0" },
-    { name = "keybert", specifier = "==0.9.0" },
     { name = "pandas", specifier = "==3.0.3" },
     { name = "plotly", specifier = "==6.8.0" },
     { name = "sentencepiece", specifier = "==0.2.2" },
