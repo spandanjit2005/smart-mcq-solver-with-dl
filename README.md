@@ -105,4 +105,4 @@ rag_pipeline/data_processing/data_vectorization/create_chroma_db.py
 
 It's also recommended to create your own `.env` file using the provided `.env.sample` file. Guides on how to get your own API keys are available from Kaggle and WandB.
 
-For any queris related to this project, contact me at spandanjit2005+smart.mcq@proton.me.
+For any queries related to this project, contact me at spandanjit2005+smart.mcq@proton.me.
